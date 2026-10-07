@@ -14,7 +14,7 @@ Projeto desenvolvido para a modelagem de dados de uma empresa do segmento de fun
 
 | Integrante | RA |
 |---|---|
-| Nome do integrante 1 | RA |
+| FELIPE DE SOUZA FERREIRA | RA |
 | Nome do integrante 2 | RA |
 | Nome do integrante 3 | RA |
 | Nome do integrante 4 | RA |
