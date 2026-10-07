@@ -19,6 +19,10 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 | Kaiky dos Santos Ferreira | 47802928 |
 | Vinicius de Oliveira | 47710608 |
 | Davi Melo Salgueiro Leonardo | 48129470 |
+| Ruan Sousa Silva | 48129470 |
+| Leonardo |
+| Leonardo |
+
 
 
 ---
