@@ -604,4 +604,5 @@ projeto-funilaria/
 │   └── DER.png
 └── documentos/
     └── dicionario de dados.pdf
+    └── DIARIO DE BORDO_000205.pdf
 ```
