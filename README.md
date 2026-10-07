@@ -562,6 +562,6 @@ projeto-funilaria/
 ├── README.md
 └── diagramas/
     └── DER.png
-└── ddocumentos/
+└── documentos/
     └── dicionario de dados.pdf
 ```
