@@ -17,13 +17,11 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 | Kayke Queriquieri da Silva | 47556897 |
 | Jonathan Nery Lacerda | 47734213 |
 | Kaiky dos Santos Ferreira | 47802928 |
-| Vinicius de Oliveira | 47710608 |
 | Davi Melo Salgueiro Leonardo | 48129470 |
-| Ruan Sousa Silva | 48129470 |
-| Leonardo |
-| Leonardo |
-
-
+| Ruan Sousa Silva | 47347805 |
+| Vinicius de Oliveira | 47710608 |
+| Leonardo (sobrenome a informar) | a informar |
+| Leonardo 2 (sobrenome a informar) | a informar |
 
 ---
 
@@ -155,14 +153,14 @@ Para a modelagem de dados, o negócio permite aplicar:
 | RN04 | Cada ordem de serviço refere-se a exatamente um veículo. |
 | RN05 | Um funcionário pode atender nenhuma ou várias ordens de serviço. |
 | RN06 | Cada ordem de serviço possui exatamente um funcionário responsável. |
-| RN07 | Cada ordem de serviço gera exatamente um orçamento. |
+| RN07 | Cada ordem de serviço gera no máximo um orçamento: a ordem é aberta primeiro e o orçamento só é criado depois da análise do veículo. |
 | RN08 | Cada orçamento pertence a exatamente uma ordem de serviço. |
 | RN09 | Um orçamento pode possuir nenhum ou vários itens. |
 | RN10 | Cada item pertence a exatamente um orçamento. |
 | RN11 | Um serviço pode estar em nenhum ou vários itens; um item refere-se a no máximo um serviço. |
 | RN12 | Uma peça pode estar em nenhum ou vários itens; um item refere-se a no máximo uma peça. |
 | RN13 | Cada item deve referir-se a exatamente um serviço **ou** uma peça, nunca aos dois e nunca a nenhum. |
-| RN14 | Cada orçamento possui exatamente um pagamento. |
+| RN14 | Cada orçamento possui no máximo um pagamento: o pagamento só é registrado depois que o orçamento é definido, e um orçamento pode expirar sem ser pago. |
 | RN15 | Cada pagamento pertence a exatamente um orçamento. |
 | RN16 | Um fornecedor pode fornecer nenhuma ou várias peças. |
 | RN17 | Uma peça pode ter nenhum ou vários fornecedores. |
@@ -179,11 +177,11 @@ Para a modelagem de dados, o negócio permite aplicar:
 
 1. Um veículo não pode ser cadastrado sem cliente proprietário.
 2. Uma ordem de serviço não pode ser registrada sem cliente solicitante, sem veículo e sem funcionário responsável.
-3. Uma ordem de serviço gera um único orçamento, e um orçamento pertence a uma única ordem.
+3. Uma ordem de serviço gera no máximo um orçamento, e todo orçamento pertence a uma única ordem.
 4. Cada item de orçamento representa uma peça ou um serviço (RN13).
 5. Toda peça deve possuir controle de estoque, e a quantidade em estoque não pode ser negativa.
 6. O preço de compra e a data de atualização são registrados por par fornecedor/peça, pois a mesma peça pode ter preços diferentes em fornecedores diferentes.
-7. Cada orçamento possui um único pagamento; cada pagamento pertence a um único orçamento.
+7. Cada orçamento possui no máximo um pagamento; todo pagamento pertence a um único orçamento.
 8. Serviços e peças inativos não são oferecidos em novos orçamentos, mas permanecem no histórico dos orçamentos antigos.
 9. Orçamentos com validade vencida devem ser identificados pelo status e não tratados como vigentes.
 10. O acesso às operações depende do perfil do usuário (RNF02).
@@ -285,21 +283,23 @@ flowchart TD
 
 ## 12. Atributos
 
-Classificação: **identificador** (chave primária), **obrigatório**, **opcional**, **derivado** (calculado a partir de outros) e **chave estrangeira**. Todos os atributos são simples (não compostos) e monovalorados.
+Classificação: **identificador** (chave primária), **obrigatório**, **opcional** e **derivado** (calculado a partir de outros). Todos os atributos são monovalorados. Os atributos são tratados como simples; a única exceção em potencial é `endereco` (FORNECEDOR), mantido como um campo único de texto nesta etapa e que poderá ser decomposto (logradouro, cidade, etc.) no modelo lógico.
 
-| Entidade | Identificador | Obrigatórios | Opcionais | Derivados | Chave estrangeira |
-|---|---|---|---|---|---|
-| CLIENTE | id_cliente | nome, cpf_cnpj | telefone | — | — |
-| VEICULO | id_veiculo | placa, chassi, marca, modelo | cor, ano | — | id_cliente |
-| FUNCIONARIO | id_funcionario | nome, cpf, cargo, data_contratacao | telefone | — | — |
-| ORDEM_SERVICO | id_os | data_abertura, descricao_problema, status | previsao_entrega | — | id_cliente, id_veiculo, id_funcionario |
-| ORCAMENTO | id_orcamento | data_orcamento, validade, status | — | valor_total (soma dos itens) | id_os |
-| ITEM_ORCAMENTO | id_item | quantidade, valor_unitario | id_servico ou id_peca (um dos dois) | valor_total (quantidade × valor_unitario) | id_orcamento, id_servico, id_peca |
-| SERVICO | id_servico | descricao, valor_padrao, ativo | tempo_padrao_horas | — | — |
-| PECA | id_peca | descricao, preco_unitario, estoque, ativo | — | — | — |
-| FORNECEDOR | id_fornecedor | nome, cnpj | endereco, telefone, email | — | — |
-| FORNECEDOR_PECA | id_fornecedor + id_peca (composto) | preco_compra, data_atualizacao | — | — | id_fornecedor, id_peca |
-| PAGAMENTO | id_pagamento | data_pagamento, valor, forma_pagamento, status | — | — | id_orcamento |
+| Entidade | Identificador | Obrigatórios | Opcionais | Derivados |
+|---|---|---|---|---|
+| CLIENTE | id_cliente | nome, cpf_cnpj | telefone | — |
+| VEICULO | id_veiculo | placa, chassi, marca, modelo | cor, ano | — |
+| FUNCIONARIO | id_funcionario | nome, cpf, cargo, data_contratacao | telefone | — |
+| ORDEM_SERVICO | id_os | data_abertura, descricao_problema, status | previsao_entrega | — |
+| ORCAMENTO | id_orcamento | data_orcamento, validade, status | — | valor_total (soma dos itens) |
+| ITEM_ORCAMENTO | id_item | quantidade, valor_unitario | — | valor_total (quantidade × valor_unitario) |
+| SERVICO | id_servico | descricao, valor_padrao, ativo | tempo_padrao_horas | — |
+| PECA | id_peca | descricao, preco_unitario, estoque, ativo | — | — |
+| FORNECEDOR | id_fornecedor | nome, cnpj | endereco, telefone, email | — |
+| FORNECEDOR_PECA | combinação FORNECEDOR + PECA | preco_compra, data_atualizacao | — | — |
+| PAGAMENTO | id_pagamento | data_pagamento, valor, forma_pagamento, status | — | — |
+
+As chaves estrangeiras não são atributos do modelo conceitual: elas surgem do mapeamento dos relacionamentos no modelo lógico (prévia na seção 16). Os vínculos entre as entidades estão nas seções 13 e 14.
 
 ---
 
@@ -311,11 +311,11 @@ Classificação: **identificador** (chave primária), **obrigatório**, **opcion
 | solicita | CLIENTE — ORDEM_SERVICO | Um cliente solicita ordens de serviço |
 | associado_a | VEICULO — ORDEM_SERVICO | Um veículo é associado a ordens de serviço |
 | atende | FUNCIONARIO — ORDEM_SERVICO | Um funcionário atende ordens de serviço |
-| gera | ORDEM_SERVICO — ORCAMENTO | Uma ordem gera um orçamento |
+| gera | ORDEM_SERVICO — ORCAMENTO | Uma ordem gera, no máximo, um orçamento |
 | contem | ORCAMENTO — ITEM_ORCAMENTO | Um orçamento contém itens |
 | utilizado_em | SERVICO — ITEM_ORCAMENTO | Um serviço é utilizado em itens |
 | compoe | PECA — ITEM_ORCAMENTO | Uma peça compõe itens |
-| gera_pagamento | ORCAMENTO — PAGAMENTO | Um orçamento gera um pagamento |
+| gera_pagamento | ORCAMENTO — PAGAMENTO | Um orçamento gera, no máximo, um pagamento |
 | fornece | FORNECEDOR — FORNECEDOR_PECA | Um fornecedor fornece peças |
 | participa | PECA — FORNECEDOR_PECA | Uma peça participa de fornecimentos |
 
@@ -338,12 +338,14 @@ Método **"vá e volte"**: cada relacionamento foi analisado nos dois sentidos. 
 | CLIENTE (0,N) — solicita — ORDEM_SERVICO (1,1) | Um cliente solicita quantas ordens? **0,N** | Uma ordem é solicitada por quantos clientes? **1,1** | 1:N | RN22, RN23 |
 | VEICULO (0,N) — associado_a — ORDEM_SERVICO (1,1) | Um veículo tem quantas ordens? **0,N** | Uma ordem refere-se a quantos veículos? **1,1** | 1:N | RN03, RN04 |
 | FUNCIONARIO (0,N) — atende — ORDEM_SERVICO (1,1) | Um funcionário atende quantas ordens? **0,N** | Uma ordem tem quantos responsáveis? **1,1** | 1:N | RN05, RN06 |
-| ORDEM_SERVICO (1,1) — gera — ORCAMENTO (1,1) | Uma ordem gera quantos orçamentos? **1,1** | Um orçamento pertence a quantas ordens? **1,1** | 1:1 | RN07, RN08 |
+| ORDEM_SERVICO (0,1) — gera — ORCAMENTO (1,1) | Uma ordem gera quantos orçamentos? **0,1** | Um orçamento pertence a quantas ordens? **1,1** | 1:1 | RN07, RN08 |
 | ORCAMENTO (0,N) — contem — ITEM_ORCAMENTO (1,1) | Um orçamento tem quantos itens? **0,N** | Um item pertence a quantos orçamentos? **1,1** | 1:N | RN09, RN10 |
 | SERVICO (0,N) — utilizado_em — ITEM_ORCAMENTO (0,1) | Um serviço está em quantos itens? **0,N** | Um item tem quantos serviços? **0,1** | 1:N | RN11, RN13 |
 | PECA (0,N) — compoe — ITEM_ORCAMENTO (0,1) | Uma peça está em quantos itens? **0,N** | Um item tem quantas peças? **0,1** | 1:N | RN12, RN13 |
-| ORCAMENTO (1,1) — gera_pagamento — PAGAMENTO (1,1) | Um orçamento tem quantos pagamentos? **1,1** | Um pagamento pertence a quantos orçamentos? **1,1** | 1:1 | RN14, RN15 |
+| ORCAMENTO (0,1) — gera_pagamento — PAGAMENTO (1,1) | Um orçamento tem quantos pagamentos? **0,1** | Um pagamento pertence a quantos orçamentos? **1,1** | 1:1 | RN14, RN15 |
 | FORNECEDOR (0,N) — fornece — PECA (0,N) | Um fornecedor fornece quantas peças? **0,N** | Uma peça tem quantos fornecedores? **0,N** | N:N | RN16, RN17 |
+
+**Leitura dos relacionamentos 1:1.** Em ORDEM_SERVICO—ORCAMENTO e em ORCAMENTO—PAGAMENTO o mínimo é 0 do lado da ordem e do orçamento porque o processo é sequencial (seção 10): a ordem é aberta antes de existir orçamento, e o orçamento é definido antes de existir pagamento (ou expira sem ser pago). Já o orçamento sempre pertence a uma ordem e o pagamento sempre pertence a um orçamento, por isso o lado de baixo é (1,1).
 
 ### Verificação de relacionamentos N:N
 
@@ -371,130 +373,167 @@ O único N:N é Fornecedor — Peça, resolvido por **FORNECEDOR_PECA**:
 
 ## 15. Dicionário de dados conceitual
 
-Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica se o campo pode ficar vazio.
+Para cada entidade, os atributos são descritos (que dado é e para que serve), classificados e associados às regras de negócio. Classificação: **identificador**, **obrigatório**, **opcional** e **derivado**. Como o modelo é conceitual, os tipos de dados e as chaves estrangeiras serão definidos nas próximas etapas (modelo lógico e físico); aqui os vínculos entre entidades aparecem na linha **Relacionamentos** de cada entidade e na seção 14.
 
 ### CLIENTE
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_cliente | int | Não | PK | Identificador único do cliente |
-| nome | string | Não | | Nome completo ou razão social |
-| cpf_cnpj | string | Não | | CPF ou CNPJ; não deve ser duplicado |
-| telefone | string | Sim | | Contato; pode ser informado depois |
+*Pessoa física ou empresa que solicita serviços e é proprietária de veículos.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_cliente` | Identificador único do cliente | Identificador | Identificação única |
+| `nome` | Nome completo ou razão social | Obrigatório | — |
+| `cpf_cnpj` | CPF ou CNPJ do cliente | Obrigatório | Não deve ser duplicado (RNF05) |
+| `telefone` | Telefone de contato | Opcional | Pode ser informado depois |
+
+**Relacionamentos:** possui VEICULO (RN01, RN02); solicita ORDEM_SERVICO (RN22, RN23).
 
 ### VEICULO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_veiculo | int | Não | PK | Identificador do veículo |
-| placa | string | Não | | Placa; não deve ser duplicada |
-| chassi | string | Não | | Número do chassi; não deve ser duplicado |
-| cor | string | Sim | | Cor do veículo |
-| ano | int | Sim | | Ano do veículo |
-| marca | string | Não | | Fabricante |
-| modelo | string | Não | | Modelo |
-| id_cliente | int | Não | FK → CLIENTE | Proprietário; todo veículo tem exatamente um (RN02) |
+*Veículo atendido pela funilaria.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_veiculo` | Identificador do veículo | Identificador | Identificação única |
+| `placa` | Placa do veículo | Obrigatório | Não deve ser duplicada (RNF05) |
+| `chassi` | Número do chassi | Obrigatório | Não deve ser duplicado (RNF05) |
+| `cor` | Cor do veículo | Opcional | — |
+| `ano` | Ano do veículo | Opcional | — |
+| `marca` | Fabricante do veículo | Obrigatório | — |
+| `modelo` | Modelo do veículo | Obrigatório | — |
+
+**Relacionamentos:** pertence a CLIENTE (RN01, RN02: todo veículo tem exatamente um proprietário); associado_a ORDEM_SERVICO (RN03, RN04).
 
 ### FUNCIONARIO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_funcionario | int | Não | PK | Identificador do funcionário |
-| nome | string | Não | | Nome completo |
-| cpf | string | Não | | CPF; não deve ser duplicado |
-| cargo | string | Não | | Função exercida |
-| telefone | string | Sim | | Contato |
-| data_contratacao | date | Não | | Data de contratação |
+*Funcionário que responde pelas ordens de serviço.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_funcionario` | Identificador do funcionário | Identificador | Identificação única |
+| `nome` | Nome completo | Obrigatório | — |
+| `cpf` | CPF do funcionário | Obrigatório | Não deve ser duplicado |
+| `cargo` | Função exercida | Obrigatório | — |
+| `telefone` | Telefone de contato | Opcional | — |
+| `data_contratacao` | Data de contratação | Obrigatório | — |
+
+**Relacionamentos:** atende ORDEM_SERVICO (RN05, RN06).
 
 ### ORDEM_SERVICO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_os | int | Não | PK | Identificador da ordem |
-| data_abertura | datetime | Não | | Data e hora de abertura |
-| descricao_problema | string | Não | | Problema apresentado pelo cliente |
-| previsao_entrega | datetime | Sim | | Prazo estimado; pode ser definido após análise |
-| status | string | Não | | Situação da ordem: aberta, em andamento ou concluída |
-| id_cliente | int | Não | FK → CLIENTE | Cliente que solicitou o serviço; pode ser diferente do proprietário do veículo (RN23) |
-| id_veiculo | int | Não | FK → VEICULO | Veículo atendido (RN04) |
-| id_funcionario | int | Não | FK → FUNCIONARIO | Responsável (RN06) |
+*Atendimento solicitado por um cliente para um veículo.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_os` | Identificador da ordem de serviço | Identificador | Identificação única |
+| `data_abertura` | Data e hora de abertura da ordem | Obrigatório | — |
+| `descricao_problema` | Problema apresentado pelo cliente | Obrigatório | — |
+| `previsao_entrega` | Prazo estimado de entrega | Opcional | Pode ser definido após a análise do veículo |
+| `status` | Situação da ordem | Obrigatório | Aberta, em andamento ou concluída |
+
+**Relacionamentos:** solicitada por CLIENTE (RN22, RN23: o solicitante pode ser diferente do proprietário do veículo); referente a VEICULO (RN03, RN04); atendida por FUNCIONARIO (RN05, RN06); gera ORCAMENTO (RN07, RN08).
 
 ### ORCAMENTO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_orcamento | int | Não | PK | Identificador do orçamento |
-| id_os | int | Não | FK → ORDEM_SERVICO (único) | Uma OS gera um único orçamento (RN07) |
-| data_orcamento | datetime | Não | | Data de criação |
-| validade | date | Não | | Data limite de validade |
-| valor_total | decimal | Não | | Derivado: soma dos valores dos itens |
-| status | string | Não | | Situação do orçamento: pendente, aprovado ou expirado |
+*Proposta de valores de uma ordem de serviço.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_orcamento` | Identificador do orçamento | Identificador | Identificação única |
+| `data_orcamento` | Data de criação do orçamento | Obrigatório | — |
+| `validade` | Data limite de validade | Obrigatório | Vencida a validade, o status passa a expirado |
+| `valor_total` | Valor total do orçamento | Derivado | Soma dos valores totais dos itens (RF14) |
+| `status` | Situação do orçamento | Obrigatório | Pendente, aprovado ou expirado |
+
+**Relacionamentos:** gerado por ORDEM_SERVICO (RN07, RN08: a ordem gera no máximo um orçamento); contem ITEM_ORCAMENTO (RN09, RN10); gera_pagamento PAGAMENTO (RN14, RN15).
 
 ### ITEM_ORCAMENTO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_item | int | Não | PK | Identificador do item |
-| id_orcamento | int | Não | FK → ORCAMENTO | Orçamento ao qual pertence |
-| id_servico | int | Sim | FK → SERVICO | Preenchido somente se o item for serviço |
-| id_peca | int | Sim | FK → PECA | Preenchido somente se o item for peça |
-| quantidade | int | Não | | Maior que zero |
-| valor_unitario | decimal | Não | | Preço no momento do orçamento (RN21) |
-| valor_total | decimal | Não | | Derivado: quantidade × valor_unitario |
+*Linha do orçamento: um serviço ou uma peça, com quantidade e valor.*
 
-> Regra RN13: exatamente um entre `id_servico` e `id_peca` deve ser preenchido.
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_item` | Identificador do item | Identificador | Identificação única |
+| `quantidade` | Quantidade do serviço ou da peça | Obrigatório | Maior que zero |
+| `valor_unitario` | Preço unitário no momento do orçamento | Obrigatório | Não muda se o preço padrão for alterado depois (RN21) |
+| `valor_total` | Valor total do item | Derivado | quantidade × valor_unitario |
+
+**Relacionamentos:** pertence a ORCAMENTO (RN09, RN10); utilizado_em SERVICO (RN11); compoe PECA (RN12).
+
+> Regra RN13: cada item refere-se a exatamente um serviço ou uma peça, nunca aos dois e nunca a nenhum.
 
 ### SERVICO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_servico | int | Não | PK | Identificador do serviço |
-| descricao | string | Não | | Descrição do serviço |
-| valor_padrao | decimal | Não | | Valor de referência |
-| tempo_padrao_horas | decimal | Sim | | Tempo estimado de execução |
-| ativo | boolean | Não | | Serviço inativo não entra em novos orçamentos (RN20) |
+*Serviço de mão de obra oferecido pela funilaria.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_servico` | Identificador do serviço | Identificador | Identificação única |
+| `descricao` | Descrição do serviço | Obrigatório | — |
+| `valor_padrao` | Valor de referência do serviço | Obrigatório | — |
+| `tempo_padrao_horas` | Tempo estimado de execução, em horas | Opcional | — |
+| `ativo` | Indica se o serviço está disponível | Obrigatório | Serviço inativo não entra em novos orçamentos (RN20) |
+
+**Relacionamentos:** utilizado_em ITEM_ORCAMENTO (RN11).
 
 ### PECA
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_peca | int | Não | PK | Identificador da peça |
-| descricao | string | Não | | Descrição da peça |
-| preco_unitario | decimal | Não | | Preço de venda de referência |
-| estoque | int | Não | | Quantidade disponível; não negativa (RN19) |
-| ativo | boolean | Não | | Peça inativa não entra em novos orçamentos (RN20) |
+*Peça utilizada nos reparos, com controle de estoque.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_peca` | Identificador da peça | Identificador | Identificação única |
+| `descricao` | Descrição da peça | Obrigatório | — |
+| `preco_unitario` | Preço de venda de referência | Obrigatório | — |
+| `estoque` | Quantidade disponível | Obrigatório | Não pode ser negativa (RN19) |
+| `ativo` | Indica se a peça está disponível | Obrigatório | Peça inativa não entra em novos orçamentos (RN20) |
+
+**Relacionamentos:** compoe ITEM_ORCAMENTO (RN12); participa de FORNECEDOR_PECA (RN17).
 
 ### FORNECEDOR
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_fornecedor | int | Não | PK | Identificador do fornecedor |
-| nome | string | Não | | Nome ou razão social |
-| cnpj | string | Não | | CNPJ; não deve ser duplicado |
-| endereco | string | Sim | | Endereço |
-| telefone | string | Sim | | Contato |
-| email | string | Sim | | E-mail de contato |
+*Empresa que fornece peças.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_fornecedor` | Identificador do fornecedor | Identificador | Identificação única |
+| `nome` | Nome ou razão social | Obrigatório | — |
+| `cnpj` | CNPJ do fornecedor | Obrigatório | Não deve ser duplicado |
+| `endereco` | Endereço | Opcional | Campo único de texto nesta etapa |
+| `telefone` | Telefone de contato | Opcional | — |
+| `email` | E-mail de contato | Opcional | — |
+
+**Relacionamentos:** fornece, por meio de FORNECEDOR_PECA (RN16).
 
 ### FORNECEDOR_PECA (entidade associativa)
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_fornecedor | int | Não | PK, FK → FORNECEDOR | Parte da chave composta |
-| id_peca | int | Não | PK, FK → PECA | Parte da chave composta; o par não pode se repetir |
-| preco_compra | decimal | Não | | Preço pago ao fornecedor por esta peça (RN18) |
-| data_atualizacao | date | Não | | Data da última atualização do preço (RN18) |
+*Fornecimento de uma peça por um fornecedor; resolve o N:N entre FORNECEDOR e PECA.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| (identificador) | Combinação de FORNECEDOR e PECA | Identificador | O par não pode se repetir (RN16, RN17) |
+| `preco_compra` | Preço pago ao fornecedor por esta peça | Obrigatório | Pertence ao relacionamento, não à peça nem ao fornecedor (RN18) |
+| `data_atualizacao` | Data da última atualização do preço | Obrigatório | RN18 |
+
+**Relacionamentos:** liga FORNECEDOR (RN16) e PECA (RN17).
 
 ### PAGAMENTO
-| Atributo | Tipo | Nulo? | Chave | Descrição / regra |
-|---|---|---|---|---|
-| id_pagamento | int | Não | PK | Identificador do pagamento |
-| id_orcamento | int | Não | FK → ORCAMENTO (único) | Um pagamento por orçamento (RN14, RN15) |
-| data_pagamento | datetime | Não | | Data e hora do pagamento |
-| valor | decimal | Não | | Valor pago |
-| forma_pagamento | string | Não | | Dinheiro, cartão ou PIX |
-| status | string | Não | | Situação do pagamento: pendente ou confirmado |
+*Pagamento de um orçamento.*
+
+| Atributo | Descrição | Classificação | Regra / observação |
+|---|---|---|---|
+| `id_pagamento` | Identificador do pagamento | Identificador | Identificação única |
+| `data_pagamento` | Data e hora do pagamento | Obrigatório | — |
+| `valor` | Valor pago | Obrigatório | — |
+| `forma_pagamento` | Forma de pagamento | Obrigatório | Dinheiro, cartão ou PIX |
+| `status` | Situação do pagamento | Obrigatório | Pendente ou confirmado |
+
+**Relacionamentos:** referente a ORCAMENTO (RN14, RN15: o orçamento tem no máximo um pagamento).
 
 ---
-
 ## 16. DER
 
-Notação: retângulos são entidades (chave primária sublinhada, chave estrangeira em itálico), losangos são relacionamentos e as cardinalidades (mín,máx) aparecem ao lado de cada entidade, como na seção 14.
+Notação: o DER é conceitual, por isso não mostra chaves estrangeiras (os vínculos são representados pelos relacionamentos). Retângulos são entidades (identificador sublinhado, atributos opcionais e derivados indicados ao lado do nome), losangos são relacionamentos (com os códigos das regras de negócio que os sustentam) e as cardinalidades (mín,máx) aparecem ao lado de cada entidade, como na seção 14. Uma prévia das chaves estrangeiras (modelo lógico) está ao final desta seção.
 
 ![Diagrama Entidade-Relacionamento](diagramas/DER.png)
 
-> Regra RN13 (não visível no desenho): em ITEM_ORCAMENTO, exatamente um entre `id_servico` e `id_peca` deve ser preenchido. FORNECEDOR_PECA é a entidade associativa que resolve o N:N entre FORNECEDOR e PECA e guarda `preco_compra` e `data_atualizacao`.
+> Regra RN13: a linha tracejada vermelha entre `utilizado_em` e `compoe` indica que cada item de orçamento refere-se a um serviço **ou** a uma peça, nunca aos dois e nunca a nenhum. FORNECEDOR_PECA é a entidade associativa que resolve o N:N entre FORNECEDOR e PECA e guarda `preco_compra` e `data_atualizacao` (RN18); é identificada pela combinação das duas entidades.
+>
+> Atributos derivados (em marrom no desenho): `valor_total` de ORCAMENTO (soma dos itens) e `valor_total` de ITEM_ORCAMENTO (quantidade × valor_unitario), conforme a seção 12.
 
-**Chaves primárias e estrangeiras**
+**Prévia para o modelo lógico — chaves primárias e estrangeiras**
+
+O DER é conceitual e não mostra chaves estrangeiras. A tabela abaixo apenas antecipa como os relacionamentos serão implementados na próxima etapa.
 
 | Tabela | Chave primária | Chaves estrangeiras |
 |---|---|---|
@@ -521,24 +560,25 @@ Cada decisão responde: **o que decidimos, por que, e qual regra ou necessidade 
 | Cliente (0,N) e veículo (1,1) em CLIENTE—VEICULO | Um cliente pode estar cadastrado sem veículo e ter vários; um veículo nunca existe sem proprietário. | RN01, RN02 |
 | Veículo (0,N) e ordem (1,1) em VEICULO—ORDEM_SERVICO | Um veículo novo ainda não tem ordens e pode ter várias ao longo do tempo; cada ordem trata de um único veículo. | RN03, RN04 |
 | Funcionário (0,N) e ordem (1,1) em FUNCIONARIO—ORDEM_SERVICO | Um funcionário pode ainda não ter atendimentos; cada ordem tem exatamente um responsável. | RN05, RN06 |
-| **Manter `id_cliente` em ORDEM_SERVICO** (relacionamento solicita), além do veículo | Quem solicita e paga o serviço nem sempre é o proprietário do veículo (como um familiar ou o motorista de uma empresa). Guardar o solicitante na ordem também preserva o histórico se o proprietário do veículo mudar, por venda do carro. Por isso não é redundância: são papéis diferentes (proprietário do veículo × solicitante do serviço). | RN22, RN23 |
-| ORDEM_SERVICO—ORCAMENTO como 1:1, em entidades separadas | A regra define um orçamento por ordem. A ordem registra o atendimento (problema, prazo, responsável); o orçamento registra valores, itens e validade, com status próprio. | RN07, RN08 |
+| **Manter o relacionamento CLIENTE—ORDEM_SERVICO (solicita)**, além do vínculo com o veículo | Quem solicita e paga o serviço nem sempre é o proprietário do veículo (como um familiar ou o motorista de uma empresa). Guardar o solicitante na ordem também preserva o histórico se o proprietário do veículo mudar, por venda do carro. Por isso não é redundância: são papéis diferentes (proprietário do veículo × solicitante do serviço). | RN22, RN23 |
+| ORDEM_SERVICO (0,1) e ORCAMENTO (1,1) em ORDEM_SERVICO—ORCAMENTO (1:1), em entidades separadas | A ordem é aberta antes do orçamento: na abertura ainda não há orçamento, por isso o mínimo é 0 do lado da ordem. Todo orçamento nasce de uma ordem, por isso é (1,1). A ordem registra o atendimento (problema, prazo, responsável); o orçamento registra valores, itens e validade, com status próprio. | RN07, RN08 |
 | ORCAMENTO—ITEM_ORCAMENTO como 1:N | Um orçamento é composto por vários itens e cada item pertence a um só orçamento. | RN09, RN10 |
-| ITEM_ORCAMENTO com `id_servico` e `id_peca` anuláveis e exclusivos | Uma única entidade permite compor o orçamento com serviços e peças. Exatamente um dos dois deve ser preenchido, o que explica a cardinalidade (0,1) do lado do item. Na implementação física, deve ser garantido por restrição (CHECK). | RN11, RN12, RN13 |
+| ITEM_ORCAMENTO ligado a SERVICO (0,1) e a PECA (0,1), com exclusividade | Uma única entidade permite compor o orçamento com serviços e peças. Cada item refere-se a exatamente um dos dois, o que explica a cardinalidade (0,1) do lado do item em cada relacionamento e a regra de exclusividade (linha tracejada no DER). Na implementação física, deve ser garantido por restrição (CHECK). | RN11, RN12, RN13 |
 | Valor total do item e do orçamento mantidos como atributos derivados | Facilitam consultas e preservam o valor emitido ao cliente. | RF14 |
 | `valor_unitario` copiado para o item | Congela o preço do momento do orçamento; reajustes futuros não alteram orçamentos antigos. | RN21 |
-| ORCAMENTO—PAGAMENTO como 1:1 | Segue a regra levantada: cada orçamento tem um pagamento. | RN14, RN15 |
+| ORCAMENTO (0,1) e PAGAMENTO (1,1) em ORCAMENTO—PAGAMENTO (1:1), em entidades separadas | O pagamento só existe depois que o orçamento é definido, e um orçamento pode expirar ou ficar pendente sem pagamento, por isso o mínimo é 0 do lado do orçamento. Todo pagamento pertence a um orçamento, por isso é (1,1). O pagamento tem dados e status próprios (pendente ou confirmado), o que o torna uma entidade e facilita evoluir para vários pagamentos no futuro. | RN14, RN15 |
 | Fornecedor—Peça considerado N:N | Um fornecedor fornece várias peças e uma peça pode ter vários fornecedores. | RN16, RN17 |
 | Criar a entidade associativa FORNECEDOR_PECA | O N:N precisa ser decomposto em duas relações 1:N e há informação própria do fornecimento. | RN18 |
 | `preco_compra` e `data_atualizacao` pertencem ao relacionamento, não a PECA nem a FORNECEDOR | O preço varia conforme o par fornecedor/peça: a mesma peça tem preços diferentes em fornecedores diferentes. | RN18, RF17 |
-| Chave primária composta (id_fornecedor + id_peca) em FORNECEDOR_PECA | A combinação dos dois identifica de forma única cada fornecimento e impede registrar o mesmo par duas vezes. Além disso, cada atributo da chave é também chave estrangeira. | Diário de bordo (aula de 15/09), RN16, RN17 |
+| FORNECEDOR_PECA identificada pela combinação FORNECEDOR + PECA (no modelo lógico, chave primária composta por `id_fornecedor` + `id_peca`) | A combinação dos dois identifica de forma única cada fornecimento e impede registrar o mesmo par duas vezes. | Diário de bordo (aula de 15/09), RN16, RN17 |
 | Atributo `ativo` em SERVICO e PECA em vez de exclusão | Preserva o histórico de orçamentos antigos que usaram o cadastro. | RN20 |
 | Atributo `estoque` em PECA | Cada peça precisa de quantidade controlada. | RN19, RF15 |
-| Chaves primárias próprias (id_*) em todas as entidades | Identificação única e relacionamentos por chaves estrangeiras, preservando a integridade. | RNF04 |
+| Identificador próprio (id_*) em todas as entidades | Identificação única de cada ocorrência; na etapa lógica servirá de base para as chaves estrangeiras, preservando a integridade. | RNF04 |
+| DER sem chaves estrangeiras | O DER é conceitual: os vínculos são representados pelos relacionamentos e suas cardinalidades; as chaves estrangeiras surgem no modelo lógico (prévia na seção 16). | Etapas 16 e 17 do manual da entrega |
 
 ### Escalabilidade e integração
 
-**Integração.** As entidades formam uma cadeia ligada por chaves estrangeiras: CLIENTE → VEICULO → ORDEM_SERVICO (ligada também ao CLIENTE solicitante) → ORCAMENTO → ITEM_ORCAMENTO → SERVICO/PECA → FORNECEDOR_PECA → FORNECEDOR, e ORCAMENTO → PAGAMENTO. Um dado cadastrado em um processo é reaproveitado nos seguintes, sem redigitação.
+**Integração.** As entidades formam uma cadeia ligada por relacionamentos: CLIENTE → VEICULO → ORDEM_SERVICO (ligada também ao CLIENTE solicitante) → ORCAMENTO → ITEM_ORCAMENTO → SERVICO/PECA → FORNECEDOR_PECA → FORNECEDOR, e ORCAMENTO → PAGAMENTO. Um dado cadastrado em um processo é reaproveitado nos seguintes, sem redigitação.
 
 **Preparação para evolução.** O modelo permite, nas próximas etapas, sem refazer a base:
 
@@ -560,8 +600,8 @@ A modelagem organiza os principais dados e processos da Prime Funilaria, de clie
 ```text
 projeto-funilaria/
 ├── README.md
-└── diagramas/
-    └── DER.png
+├── diagramas/
+│   └── DER.png
 └── documentos/
     └── dicionario de dados.pdf
 ```
