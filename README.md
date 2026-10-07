@@ -468,9 +468,11 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 
 ## 16. DER
 
-Em cada relacionamento, o texto traz a cardinalidade de cada lado, na mesma notação da seção 14.
+Notação: retângulos são entidades (chave primária sublinhada, chave estrangeira em itálico), losangos são relacionamentos e as cardinalidades (mín,máx) aparecem ao lado de cada entidade, como na seção 14.
 
 ![Diagrama Entidade-Relacionamento](diagramas/DER.png)
+
+> Regra RN13 (não visível no desenho): em ITEM_ORCAMENTO, exatamente um entre `id_servico` e `id_peca` deve ser preenchido. FORNECEDOR_PECA é a entidade associativa que resolve o N:N entre FORNECEDOR e PECA e guarda `preco_compra` e `data_atualizacao`.
 
 **Chaves primárias e estrangeiras**
 
