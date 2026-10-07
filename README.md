@@ -11,12 +11,11 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 **Projeto:** Sistema ERP — Prime Funilaria
 **Grupo:** 04
 
-| Integrante | RA |
-|---|---|
-| Felipe de Souza Ferreira | _preencher_ |
-| Ruan Sousa Silva | _preencher_ |
-| Kaiky Queriquieri | _preencher_ |
-| _Nome do integrante 4 (se houver)_ | _preencher_ |
+| Integrantes |
+|---|
+| Felipe de Souza Ferreira |
+| Ruan Sousa Silva |
+| Kaiky Queriquieri |
 
 ---
 
@@ -42,8 +41,15 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 | Financeiro | Registra os pagamentos |
 
 **Como funciona atualmente.**
-<!-- CONFIRMAR COM O GRUPO: ajuste este parágrafo conforme a realidade da empresa -->
-As informações da empresa estão dispersas: dados de clientes e veículos ficam em cadastros separados, as ordens de serviço e os orçamentos são registrados de forma manual (papel ou planilhas), o estoque de peças é conferido manualmente e os preços praticados pelos fornecedores não ficam centralizados. Isso dificulta saber qual veículo está em qual atendimento, quanto foi orçado, quais peças ainda existem em estoque e quanto foi pago.
+Hoje a Prime Funilaria não utiliza nenhum sistema: todo o controle é feito em papel, com fichas, formulários e anotações guardados em pastas, sem nada que ligue as etapas do atendimento:
+
+- **Atendimento.** Quando o cliente chega, o atendente anota em uma ficha de papel o nome, o telefone e o CPF/CNPJ do cliente e os dados do veículo (placa, chassi, marca, modelo, cor e ano). Como não existe uma base única, o mesmo cliente pode ser anotado mais de uma vez, e para encontrar o histórico de atendimentos de um veículo é preciso procurar entre as fichas guardadas.
+- **Ordem de serviço.** A ordem é preenchida em um formulário de papel, com a descrição do problema, a previsão de entrega e o nome do funcionário que cuidará do carro. O andamento (aberta, em andamento, concluída) só é conhecido perguntando ao responsável ou procurando o papel da ordem.
+- **Orçamento.** O funcionário analisa o veículo e escreve o orçamento à mão, listando os serviços e as peças necessários, com quantidades e valores, e calcula o total e a validade. A ligação entre o orçamento e a ordem de serviço depende de os papéis estarem juntos, e os preços dos serviços e das peças são escritos novamente a cada orçamento.
+- **Peças, estoque e fornecedores.** O estoque de peças é conferido de forma manual (contagem e anotações em papel), o que gera divergência entre a quantidade registrada e a real. Os preços de compra são combinados com cada fornecedor por telefone ou mensagem e não ficam registrados em um só lugar, o que dificulta comparar fornecedores e saber o custo de cada peça.
+- **Pagamento.** O recebimento é anotado no caixa ou em recibo de papel, sem indicar com clareza a qual orçamento ou ordem de serviço ele se refere.
+
+Como consequência, a empresa tem dificuldade para saber qual veículo está em qual atendimento, quem é o responsável, quanto foi orçado, quais peças ainda existem em estoque, qual fornecedor oferece o melhor preço e quanto já foi pago, além do risco de perda ou extravio dos papéis. É esse conjunto de problemas que o sistema ERP deverá resolver, integrando cadastros, ordens, orçamentos, estoque, fornecedores e pagamentos em uma única base de dados.
 
 **Informações importantes para o negócio.** Dados do cliente e do veículo; histórico de ordens de serviço por veículo; funcionário responsável por cada atendimento; composição e validade do orçamento; estoque e preço das peças; preço de compra por fornecedor; pagamentos.
 
@@ -86,7 +92,7 @@ Para a modelagem de dados, o negócio permite aplicar:
 |---|---|---|---|---|---|
 | Cadastro de cliente | Atendimento, cliente | Cliente novo solicita atendimento | Registra nome, CPF/CNPJ e telefone | CLIENTE | Cliente cadastrado |
 | Cadastro de veículo | Atendimento, cliente | Veículo ainda não cadastrado | Registra placa, chassi, cor, ano, marca e modelo vinculados ao proprietário | VEICULO | Veículo vinculado ao cliente |
-| Abertura de ordem de serviço | Atendimento, funcionário | Cliente solicita reparo | Registra problema, previsão de entrega, status e funcionário responsável | ORDEM_SERVICO | OS aberta |
+| Abertura de ordem de serviço | Atendimento, funcionário | Cliente solicita reparo | Registra cliente solicitante, veículo, problema, previsão de entrega, status e funcionário responsável | ORDEM_SERVICO | OS aberta |
 | Geração do orçamento | Funcionário, orçamentos | OS aberta | Define serviços e peças, quantidades e valores; calcula total e validade | ORCAMENTO, ITEM_ORCAMENTO | Orçamento emitido |
 | Controle de peças e fornecedores | Estoque, fornecedores | Necessidade de peça ou atualização de preço | Cadastra peça, confere estoque, relaciona fornecedor com preço de compra e data | PECA, FORNECEDOR, FORNECEDOR_PECA | Peça com fornecedores e custo registrados |
 | Registro do pagamento | Financeiro, cliente | Orçamento definido | Registra data, valor, forma e status | PAGAMENTO | Orçamento com pagamento associado |
@@ -104,7 +110,7 @@ Para a modelagem de dados, o negócio permite aplicar:
 - **RF07:** O sistema deverá cadastrar peças e permitir ativá-las ou inativá-las.
 - **RF08:** O sistema deverá cadastrar fornecedores.
 - **RF09:** O sistema deverá abrir ordens de serviço.
-- **RF10:** O sistema deverá associar a ordem de serviço a um veículo (o cliente é identificado pelo proprietário do veículo).
+- **RF10:** O sistema deverá associar a ordem de serviço ao cliente solicitante e ao veículo atendido.
 - **RF11:** O sistema deverá associar um funcionário responsável à ordem de serviço.
 - **RF12:** O sistema deverá gerar um orçamento a partir da ordem de serviço.
 - **RF13:** O sistema deverá registrar os itens do orçamento, cada um sendo um serviço ou uma peça, com quantidade e valores.
@@ -121,7 +127,7 @@ Para a modelagem de dados, o negócio permite aplicar:
 ## 7. Requisitos não funcionais
 
 - **RNF01 — Segurança:** o sistema deverá proteger os dados armazenados contra acesso não autorizado.
-- **RNF02 — Controle de acesso:** o sistema deverá controlar as operações permitidas conforme o perfil do usuário (por exemplo, atendimento, estoque, financeiro).
+- **RNF02 — Controle de acesso:** o sistema deverá controlar as operações permitidas conforme o perfil do usuário (atendimento, estoque e financeiro).
 - **RNF03 — Rastreabilidade:** o sistema deverá manter registro das operações realizadas pelos usuários.
 - **RNF04 — Integridade:** o sistema deverá preservar a integridade dos relacionamentos entre os dados.
 - **RNF05 — Confiabilidade:** o sistema deverá manter os dados consistentes, evitando duplicidade de CPF/CNPJ, placa e chassi.
@@ -138,7 +144,7 @@ Para a modelagem de dados, o negócio permite aplicar:
 | RN01 | Um cliente pode possuir nenhum ou vários veículos. |
 | RN02 | Cada veículo pertence a exatamente um cliente. |
 | RN03 | Um veículo pode ter nenhuma ou várias ordens de serviço. |
-| RN04 | Cada ordem de serviço refere-se a exatamente um veículo; o cliente da ordem é o proprietário desse veículo. |
+| RN04 | Cada ordem de serviço refere-se a exatamente um veículo. |
 | RN05 | Um funcionário pode atender nenhuma ou várias ordens de serviço. |
 | RN06 | Cada ordem de serviço possui exatamente um funcionário responsável. |
 | RN07 | Cada ordem de serviço gera exatamente um orçamento. |
@@ -156,13 +162,15 @@ Para a modelagem de dados, o negócio permite aplicar:
 | RN19 | Cada peça possui uma quantidade em estoque registrada. |
 | RN20 | Serviços e peças podem ser ativos ou inativos; inativos não devem ser incluídos em novos orçamentos. |
 | RN21 | O valor unitário do item é gravado no orçamento e não muda se o preço padrão do serviço ou da peça for alterado depois. |
+| RN22 | Um cliente pode solicitar nenhuma ou várias ordens de serviço. |
+| RN23 | Cada ordem de serviço é solicitada por exatamente um cliente, que pode ou não ser o proprietário do veículo atendido. |
 
 ---
 
 ## 9. Restrições e políticas organizacionais
 
 1. Um veículo não pode ser cadastrado sem cliente proprietário.
-2. Uma ordem de serviço não pode ser registrada sem veículo e sem funcionário responsável.
+2. Uma ordem de serviço não pode ser registrada sem cliente solicitante, sem veículo e sem funcionário responsável.
 3. Uma ordem de serviço gera um único orçamento, e um orçamento pertence a uma única ordem.
 4. Cada item de orçamento representa uma peça ou um serviço (RN13).
 5. Toda peça deve possuir controle de estoque, e a quantidade em estoque não pode ser negativa.
@@ -190,7 +198,7 @@ flowchart TD
     G --> H
     F -- Sim --> H[Registrar descrição do problema]
     H --> I[Registrar ordem de serviço]
-    I --> J[Associar veículo e funcionário responsável]
+    I --> J[Associar cliente, veículo e funcionário responsável]
     J --> K[Definir previsão de entrega e status]
     K --> L([Fim])
 ```
@@ -276,7 +284,7 @@ Classificação: **identificador** (chave primária), **obrigatório**, **opcion
 | CLIENTE | id_cliente | nome, cpf_cnpj | telefone | — | — |
 | VEICULO | id_veiculo | placa, chassi, marca, modelo | cor, ano | — | id_cliente |
 | FUNCIONARIO | id_funcionario | nome, cpf, cargo, data_contratacao | telefone | — | — |
-| ORDEM_SERVICO | id_os | data_abertura, descricao_problema, status | previsao_entrega | — | id_veiculo, id_funcionario |
+| ORDEM_SERVICO | id_os | data_abertura, descricao_problema, status | previsao_entrega | — | id_cliente, id_veiculo, id_funcionario |
 | ORCAMENTO | id_orcamento | data_orcamento, validade, status | — | valor_total (soma dos itens) | id_os |
 | ITEM_ORCAMENTO | id_item | quantidade, valor_unitario | id_servico ou id_peca (um dos dois) | valor_total (quantidade × valor_unitario) | id_orcamento, id_servico, id_peca |
 | SERVICO | id_servico | descricao, valor_padrao, ativo | tempo_padrao_horas | — | — |
@@ -292,6 +300,7 @@ Classificação: **identificador** (chave primária), **obrigatório**, **opcion
 | Relacionamento | Entidades | Leitura |
 |---|---|---|
 | possui | CLIENTE — VEICULO | Um cliente possui veículos |
+| solicita | CLIENTE — ORDEM_SERVICO | Um cliente solicita ordens de serviço |
 | associado_a | VEICULO — ORDEM_SERVICO | Um veículo é associado a ordens de serviço |
 | atende | FUNCIONARIO — ORDEM_SERVICO | Um funcionário atende ordens de serviço |
 | gera | ORDEM_SERVICO — ORCAMENTO | Uma ordem gera um orçamento |
@@ -307,7 +316,7 @@ Classificação: **identificador** (chave primária), **obrigatório**, **opcion
 | Relacionamento | Possui atributo próprio? | Justificativa |
 |---|---|---|
 | FORNECEDOR — PECA (N:N) | **Sim:** preco_compra, data_atualizacao | O preço de compra não descreve só o fornecedor nem só a peça, e sim o fornecimento daquela peça por aquele fornecedor (RN18). Por isso o relacionamento vira a entidade associativa FORNECEDOR_PECA. |
-| Demais relacionamentos | Não | São 1:1 ou 1:N; qualquer informação descreve diretamente uma das entidades (por exemplo, quantidade e valor_unitario descrevem o item, não o vínculo orçamento–serviço). |
+| Demais relacionamentos | Não | São 1:1 ou 1:N; qualquer informação descreve diretamente uma das entidades (quantidade e valor_unitario descrevem o item, não o vínculo orçamento–serviço). |
 
 ---
 
@@ -318,6 +327,7 @@ Método **"vá e volte"**: cada relacionamento foi analisado nos dois sentidos. 
 | Relacionamento | Vá | Volta | Tipo | Regra |
 |---|---|---|---|---|
 | CLIENTE (0,N) — possui — VEICULO (1,1) | Um cliente possui quantos veículos? **0,N** | Um veículo pertence a quantos clientes? **1,1** | 1:N | RN01, RN02 |
+| CLIENTE (0,N) — solicita — ORDEM_SERVICO (1,1) | Um cliente solicita quantas ordens? **0,N** | Uma ordem é solicitada por quantos clientes? **1,1** | 1:N | RN22, RN23 |
 | VEICULO (0,N) — associado_a — ORDEM_SERVICO (1,1) | Um veículo tem quantas ordens? **0,N** | Uma ordem refere-se a quantos veículos? **1,1** | 1:N | RN03, RN04 |
 | FUNCIONARIO (0,N) — atende — ORDEM_SERVICO (1,1) | Um funcionário atende quantas ordens? **0,N** | Uma ordem tem quantos responsáveis? **1,1** | 1:N | RN05, RN06 |
 | ORDEM_SERVICO (1,1) — gera — ORCAMENTO (1,1) | Uma ordem gera quantos orçamentos? **1,1** | Um orçamento pertence a quantas ordens? **1,1** | 1:1 | RN07, RN08 |
@@ -334,6 +344,7 @@ Só é N:N quando a resposta é "vários" nos **dois** sentidos.
 | Par | A → B vários? | B → A vários? | N:N? |
 |---|---|---|---|
 | Cliente — Veículo | Sim | Não | Não |
+| Cliente — Ordem de serviço | Sim | Não | Não |
 | Veículo — Ordem de serviço | Sim | Não | Não |
 | Funcionário — Ordem de serviço | Sim | Não | Não |
 | Ordem de serviço — Orçamento | Não | Não | Não |
@@ -391,8 +402,9 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | data_abertura | datetime | Não | | Data e hora de abertura |
 | descricao_problema | string | Não | | Problema apresentado pelo cliente |
 | previsao_entrega | datetime | Sim | | Prazo estimado; pode ser definido após análise |
-| status | string | Não | | Situação da ordem (ex.: aberta, em andamento, concluída) |
-| id_veiculo | int | Não | FK → VEICULO | Veículo atendido (RN04); o cliente é obtido por ele |
+| status | string | Não | | Situação da ordem: aberta, em andamento ou concluída |
+| id_cliente | int | Não | FK → CLIENTE | Cliente que solicitou o serviço; pode ser diferente do proprietário do veículo (RN23) |
+| id_veiculo | int | Não | FK → VEICULO | Veículo atendido (RN04) |
 | id_funcionario | int | Não | FK → FUNCIONARIO | Responsável (RN06) |
 
 ### ORCAMENTO
@@ -403,7 +415,7 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | data_orcamento | datetime | Não | | Data de criação |
 | validade | date | Não | | Data limite de validade |
 | valor_total | decimal | Não | | Derivado: soma dos valores dos itens |
-| status | string | Não | | Situação (ex.: pendente, aprovado, expirado) |
+| status | string | Não | | Situação do orçamento: pendente, aprovado ou expirado |
 
 ### ITEM_ORCAMENTO
 | Atributo | Tipo | Nulo? | Chave | Descrição / regra |
@@ -461,8 +473,8 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | id_orcamento | int | Não | FK → ORCAMENTO (único) | Um pagamento por orçamento (RN14, RN15) |
 | data_pagamento | datetime | Não | | Data e hora do pagamento |
 | valor | decimal | Não | | Valor pago |
-| forma_pagamento | string | Não | | Ex.: dinheiro, cartão, PIX |
-| status | string | Não | | Situação (ex.: pendente, confirmado) |
+| forma_pagamento | string | Não | | Dinheiro, cartão ou PIX |
+| status | string | Não | | Situação do pagamento: pendente ou confirmado |
 
 ---
 
@@ -481,7 +493,7 @@ Notação: retângulos são entidades (chave primária sublinhada, chave estrang
 | CLIENTE | id_cliente | — |
 | VEICULO | id_veiculo | id_cliente |
 | FUNCIONARIO | id_funcionario | — |
-| ORDEM_SERVICO | id_os | id_veiculo, id_funcionario |
+| ORDEM_SERVICO | id_os | id_cliente, id_veiculo, id_funcionario |
 | ORCAMENTO | id_orcamento | id_os |
 | PAGAMENTO | id_pagamento | id_orcamento |
 | SERVICO | id_servico | — |
@@ -501,7 +513,7 @@ Cada decisão responde: **o que decidimos, por que, e qual regra ou necessidade 
 | Cliente (0,N) e veículo (1,1) em CLIENTE—VEICULO | Um cliente pode estar cadastrado sem veículo e ter vários; um veículo nunca existe sem proprietário. | RN01, RN02 |
 | Veículo (0,N) e ordem (1,1) em VEICULO—ORDEM_SERVICO | Um veículo novo ainda não tem ordens e pode ter várias ao longo do tempo; cada ordem trata de um único veículo. | RN03, RN04 |
 | Funcionário (0,N) e ordem (1,1) em FUNCIONARIO—ORDEM_SERVICO | Um funcionário pode ainda não ter atendimentos; cada ordem tem exatamente um responsável. | RN05, RN06 |
-| **Remover `id_cliente` de ORDEM_SERVICO** | O veículo já pertence a um único cliente; guardar o cliente também na ordem permitiria uma ordem de um cliente com veículo de outro. O cliente continua acessível pelo caminho ORDEM → VEÍCULO → CLIENTE. | RN02, RN04 |
+| **Manter `id_cliente` em ORDEM_SERVICO** (relacionamento solicita), além do veículo | Quem solicita e paga o serviço nem sempre é o proprietário do veículo (como um familiar ou o motorista de uma empresa). Guardar o solicitante na ordem também preserva o histórico se o proprietário do veículo mudar, por venda do carro. Por isso não é redundância: são papéis diferentes (proprietário do veículo × solicitante do serviço). | RN22, RN23 |
 | ORDEM_SERVICO—ORCAMENTO como 1:1, em entidades separadas | A regra define um orçamento por ordem. A ordem registra o atendimento (problema, prazo, responsável); o orçamento registra valores, itens e validade, com status próprio. | RN07, RN08 |
 | ORCAMENTO—ITEM_ORCAMENTO como 1:N | Um orçamento é composto por vários itens e cada item pertence a um só orçamento. | RN09, RN10 |
 | ITEM_ORCAMENTO com `id_servico` e `id_peca` anuláveis e exclusivos | Uma única entidade permite compor o orçamento com serviços e peças. Exatamente um dos dois deve ser preenchido, o que explica a cardinalidade (0,1) do lado do item. Na implementação física, deve ser garantido por restrição (CHECK). | RN11, RN12, RN13 |
@@ -518,7 +530,7 @@ Cada decisão responde: **o que decidimos, por que, e qual regra ou necessidade 
 
 ### Escalabilidade e integração
 
-**Integração.** As entidades formam uma cadeia ligada por chaves estrangeiras: CLIENTE → VEICULO → ORDEM_SERVICO → ORCAMENTO → ITEM_ORCAMENTO → SERVICO/PECA → FORNECEDOR_PECA → FORNECEDOR, e ORCAMENTO → PAGAMENTO. Um dado cadastrado em um processo é reaproveitado nos seguintes, sem redigitação.
+**Integração.** As entidades formam uma cadeia ligada por chaves estrangeiras: CLIENTE → VEICULO → ORDEM_SERVICO (ligada também ao CLIENTE solicitante) → ORCAMENTO → ITEM_ORCAMENTO → SERVICO/PECA → FORNECEDOR_PECA → FORNECEDOR, e ORCAMENTO → PAGAMENTO. Um dado cadastrado em um processo é reaproveitado nos seguintes, sem redigitação.
 
 **Preparação para evolução.** O modelo permite, nas próximas etapas, sem refazer a base:
 
