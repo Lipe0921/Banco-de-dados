@@ -17,7 +17,7 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 | Kayke Queriquieri da Silva | 47556897 |
 | Jonathan Nery Lacerda | 47734213 |
 | Kaiky dos Santos Ferreira | 47802928 |
-| Davi Melo Salgueiro Leonardo | 48129470 |
+| Davi Melo Salgueiro Leonardi | 48129470 |
 | Ruan Sousa Silva | 47347805 |
 | Vinicius de Oliveira | 47710608 |
 | Leonardo | não informado |
