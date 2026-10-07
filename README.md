@@ -525,7 +525,7 @@ Para cada entidade, os atributos são descritos (que dado é e para que serve), 
 
 Notação: o DER é conceitual, por isso não mostra chaves estrangeiras (os vínculos são representados pelos relacionamentos). Retângulos são entidades (identificador sublinhado, atributos opcionais e derivados indicados ao lado do nome), losangos são relacionamentos (com os códigos das regras de negócio que os sustentam) e as cardinalidades (mín,máx) aparecem ao lado de cada entidade, como na seção 14. Uma prévia das chaves estrangeiras (modelo lógico) está ao final desta seção.
 
-![Diagrama Entidade-Relacionamento](diagramas/DER.png)
+![Diagrama Entidade-Relacionamento](diagramas/DER_visual.png)
 
 > Regra RN13: a linha tracejada vermelha entre `utilizado_em` e `compoe` indica que cada item de orçamento refere-se a um serviço **ou** a uma peça, nunca aos dois e nunca a nenhum. FORNECEDOR_PECA é a entidade associativa que resolve o N:N entre FORNECEDOR e PECA e guarda `preco_compra` e `data_atualizacao` (RN18); é identificada pela combinação das duas entidades.
 >
