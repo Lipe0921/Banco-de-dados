@@ -16,7 +16,7 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 | Felipe de Souza Ferreira | 48120863
 | Kayke Queriquieri da Silva | 47556897
 | Jonathan Nery Lacerda | 47734213
-| Kaiky dos Santos Ferreira  | 47802928
+| Kaiky dos Santos Ferreira  | 47802928  | 
 
 ---
 
