@@ -1,6 +1,6 @@
 # Projeto ERP — Prime Funilaria
 
-Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual (DER) de um sistema ERP para uma funilaria automotiva.
+Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual de Dados (DER) de um sistema ERP para uma funilaria automotiva.
 
 ---
 
@@ -8,7 +8,7 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 
 **Curso:** Engenharia de Software
 **Disciplina:** Modelagem de Dados
-**Projeto:** Sistema ERP para Funilaria — Prime Funilaria
+**Projeto:** Sistema ERP — Prime Funilaria
 **Grupo:** 04
 
 | Integrante | RA |
@@ -23,15 +23,13 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 ## 2. Caracterização da empresa
 
 **Nome:** Prime Funilaria
-**Segmento:** funilaria automotiva (reparação de lataria e pintura, com troca de peças).
+**Segmento:** funilaria automotiva (reparação de lataria e pintura, com substituição de peças).
 
-### 2.1 O que a empresa oferece
-Serviços de reparação automotiva (como reparo de lataria, pintura e substituição de componentes), prestados com a utilização de peças. O valor cobrado do cliente é composto por **serviços** (mão de obra) e **peças**, apresentados em um orçamento.
+**O que oferece.** Serviços de reparação automotiva, prestados com a utilização de peças. O valor cobrado do cliente é composto por **serviços** (mão de obra) e **peças**, apresentados em um orçamento.
 
-### 2.2 Principais clientes
-Proprietários ou responsáveis por veículos (pessoas físicas ou empresas, identificados por CPF ou CNPJ) que procuram a empresa para reparar danos ao veículo.
+**Principais clientes.** Proprietários ou responsáveis por veículos (pessoas físicas ou empresas, identificados por CPF ou CNPJ) que procuram a empresa para reparar danos ao veículo.
 
-### 2.3 Setores e envolvidos
+**Principais setores e envolvidos.**
 
 | Setor / envolvido | Papel |
 |---|---|
@@ -43,45 +41,42 @@ Proprietários ou responsáveis por veículos (pessoas físicas ou empresas, ide
 | Fornecedores | Fornecem as peças utilizadas pela empresa |
 | Financeiro | Registra os pagamentos |
 
-### 2.4 Como funciona atualmente
+**Como funciona atualmente.**
 <!-- CONFIRMAR COM O GRUPO: ajuste este parágrafo conforme a realidade da empresa -->
-Hoje as informações da empresa estão dispersas: dados de clientes e veículos ficam em cadastros separados, as ordens de serviço e os orçamentos são registrados de forma manual (papel ou planilhas), o estoque de peças é conferido manualmente e os preços praticados pelos fornecedores não ficam centralizados. Isso dificulta saber qual veículo está em qual atendimento, quanto foi orçado, quais peças ainda existem em estoque e quanto foi pago.
+As informações da empresa estão dispersas: dados de clientes e veículos ficam em cadastros separados, as ordens de serviço e os orçamentos são registrados de forma manual (papel ou planilhas), o estoque de peças é conferido manualmente e os preços praticados pelos fornecedores não ficam centralizados. Isso dificulta saber qual veículo está em qual atendimento, quanto foi orçado, quais peças ainda existem em estoque e quanto foi pago.
 
-### 2.5 Informações importantes para o negócio
-Dados do cliente e do veículo; histórico de ordens de serviço por veículo; funcionário responsável por cada atendimento; composição e validade do orçamento; estoque e preço das peças; preço de compra por fornecedor; pagamentos.
+**Informações importantes para o negócio.** Dados do cliente e do veículo; histórico de ordens de serviço por veículo; funcionário responsável por cada atendimento; composição e validade do orçamento; estoque e preço das peças; preço de compra por fornecedor; pagamentos.
 
 ---
 
-## 3. Justificativa da escolha do negócio
+## 3. Justificativa da escolha
 
-A funilaria foi escolhida porque reúne, em um único negócio pequeno, processos encadeados que dependem uns dos outros: o atendimento gera uma ordem de serviço, que gera um orçamento, que consome serviços e peças, que dependem do estoque e dos fornecedores, e termina em um pagamento. Essa dependência faz com que a desorganização em uma etapa prejudique as demais, o que justifica a **integração** típica de um ERP.
+A funilaria foi escolhida porque reúne, em um único negócio pequeno, processos encadeados que dependem uns dos outros: o atendimento gera uma ordem de serviço, que gera um orçamento, que consome serviços e peças, que dependem de estoque e fornecedores, e termina em um pagamento. Como a desorganização em uma etapa prejudica as demais, o negócio justifica a **integração** típica de um ERP.
 
-Do ponto de vista da modelagem de dados, o negócio permite aplicar:
+Para a modelagem de dados, o negócio permite aplicar:
+
 - relacionamentos **1:N** (cliente–veículo, orçamento–itens);
 - relacionamento **1:1** (ordem de serviço–orçamento);
-- relacionamento **N:N com atributos próprios** (fornecedor–peça, com preço de compra e data de atualização), resolvido por entidade associativa;
+- relacionamento **N:N com atributos próprios** (fornecedor–peça, com preço de compra e data de atualização), resolvido por entidade associativa e chave composta;
 - uma regra de **exclusividade** (item de orçamento é serviço ou peça);
 - controle de **estoque** e de situação ativa/inativa de cadastros.
 
 ---
 
-## 4. Problemas e necessidades identificados
+## 4. Problemas identificados
 
-### 4.1 Problemas
+| Problema | Consequência | Requisitos que respondem |
+|---|---|---|
+| Dados de clientes sem centralização | Dificuldade para consultar informações e risco de duplicidade | RF01, RF02 |
+| Dados dos veículos desorganizados | Dificuldade para identificar o veículo e seu histórico | RF03, RF04 |
+| Controle manual das ordens de serviço | Dificuldade para acompanhar atendimentos, prazos e status | RF09, RF10, RF19 |
+| Controle manual dos orçamentos | Dificuldade para acompanhar valores e validade | RF12, RF13, RF14, RF20 |
+| Controle manual de peças e estoque | Erros na quantidade disponível | RF07, RF15 |
+| Preços de fornecedores não registrados | Dificuldade para comparar fornecedores e saber o custo das peças | RF08, RF16, RF17 |
+| Pagamentos sem vínculo claro com o orçamento | Dificuldade para acompanhar valores pagos | RF18 |
+| Responsável pelo atendimento não registrado | Dificuldade para identificar quem responde pela ordem | RF05, RF11 |
 
-| Problema | Consequência |
-|---|---|
-| Dados de clientes sem centralização | Dificuldade para consultar informações e risco de duplicidade |
-| Dados dos veículos desorganizados | Dificuldade para identificar o veículo e seu histórico |
-| Controle manual das ordens de serviço | Dificuldade para acompanhar atendimentos, prazos e status |
-| Controle manual dos orçamentos | Dificuldade para acompanhar valores e validade |
-| Controle manual de peças e estoque | Erros na quantidade disponível |
-| Preços de fornecedores não registrados | Dificuldade para comparar fornecedores e saber o custo das peças |
-| Pagamentos sem vínculo claro com o orçamento | Dificuldade para acompanhar valores pagos |
-| Responsável pelo atendimento não registrado | Dificuldade para identificar quem responde pela ordem |
-
-### 4.2 Necessidades
-O sistema deverá permitir cadastrar clientes, veículos, funcionários, serviços, peças e fornecedores; abrir ordens de serviço ligadas a veículo e funcionário; gerar orçamentos compostos por itens; controlar estoque; relacionar fornecedores e peças com preço de compra; registrar pagamentos; e consultar todas essas informações.
+**Necessidades.** Cadastrar clientes, veículos, funcionários, serviços, peças e fornecedores; abrir ordens de serviço ligadas a veículo e funcionário; gerar orçamentos compostos por itens; controlar estoque; relacionar fornecedores e peças com preço de compra; registrar pagamentos; consultar essas informações.
 
 ---
 
@@ -128,7 +123,7 @@ O sistema deverá permitir cadastrar clientes, veículos, funcionários, serviç
 - **RNF01 — Segurança:** o sistema deverá proteger os dados armazenados contra acesso não autorizado.
 - **RNF02 — Controle de acesso:** o sistema deverá controlar as operações permitidas conforme o perfil do usuário (por exemplo, atendimento, estoque, financeiro).
 - **RNF03 — Rastreabilidade:** o sistema deverá manter registro das operações realizadas pelos usuários.
-- **RNF04 — Integridade:** o sistema deverá preservar a integridade dos relacionamentos entre os dados (chaves estrangeiras).
+- **RNF04 — Integridade:** o sistema deverá preservar a integridade dos relacionamentos entre os dados.
 - **RNF05 — Confiabilidade:** o sistema deverá manter os dados consistentes, evitando duplicidade de CPF/CNPJ, placa e chassi.
 - **RNF06 — Usabilidade:** o sistema deverá apresentar as informações de forma clara para usuários sem formação técnica.
 - **RNF07 — Desempenho:** o sistema deverá apresentar as consultas em tempo adequado para uso operacional.
@@ -159,7 +154,7 @@ O sistema deverá permitir cadastrar clientes, veículos, funcionários, serviç
 | RN17 | Uma peça pode ter nenhum ou vários fornecedores. |
 | RN18 | A relação fornecedor/peça registra preço de compra e data de atualização. |
 | RN19 | Cada peça possui uma quantidade em estoque registrada. |
-| RN20 | Serviços e peças podem ser ativos ou inativos; itens inativos não devem ser incluídos em novos orçamentos. |
+| RN20 | Serviços e peças podem ser ativos ou inativos; inativos não devem ser incluídos em novos orçamentos. |
 | RN21 | O valor unitário do item é gravado no orçamento e não muda se o preço padrão do serviço ou da peça for alterado depois. |
 
 ---
@@ -170,11 +165,12 @@ O sistema deverá permitir cadastrar clientes, veículos, funcionários, serviç
 2. Uma ordem de serviço não pode ser registrada sem veículo e sem funcionário responsável.
 3. Uma ordem de serviço gera um único orçamento, e um orçamento pertence a uma única ordem.
 4. Cada item de orçamento representa uma peça ou um serviço (RN13).
-5. Toda peça deve possuir controle de estoque.
-6. O preço de compra e a data de atualização são registrados por par fornecedor/peça, pois o mesmo item pode ter preços diferentes em fornecedores diferentes.
+5. Toda peça deve possuir controle de estoque, e a quantidade em estoque não pode ser negativa.
+6. O preço de compra e a data de atualização são registrados por par fornecedor/peça, pois a mesma peça pode ter preços diferentes em fornecedores diferentes.
 7. Cada orçamento possui um único pagamento; cada pagamento pertence a um único orçamento.
 8. Serviços e peças inativos não são oferecidos em novos orçamentos, mas permanecem no histórico dos orçamentos antigos.
-9. O acesso às operações depende do perfil do usuário (RNF02).
+9. Orçamentos com validade vencida devem ser identificados pelo status e não tratados como vigentes.
+10. O acesso às operações depende do perfil do usuário (RNF02).
 
 ---
 
@@ -249,7 +245,7 @@ flowchart TD
     F --> G([Fim])
 ```
 
-**Integração entre processos:** o cadastro e a ordem de serviço (10.1) alimentam o orçamento (10.2); o orçamento usa peças e serviços cadastrados, cujo estoque e fornecedores são tratados em 10.3; e o orçamento fecha com o pagamento (10.4).
+**Integração entre os processos.** O cadastro e a ordem de serviço (10.1) alimentam o orçamento (10.2); o orçamento usa serviços e peças cadastrados, cujo estoque e fornecedores são tratados em 10.3; e o orçamento fecha com o pagamento (10.4).
 
 ---
 
@@ -273,25 +269,27 @@ flowchart TD
 
 ## 12. Atributos
 
-| Entidade | Atributos |
-|---|---|
-| CLIENTE | id_cliente, nome, cpf_cnpj, telefone |
-| VEICULO | id_veiculo, placa, chassi, cor, ano, marca, modelo, id_cliente (FK) |
-| FUNCIONARIO | id_funcionario, nome, cpf, cargo, telefone, data_contratacao |
-| ORDEM_SERVICO | id_os, data_abertura, descricao_problema, previsao_entrega, status, id_veiculo (FK), id_funcionario (FK) |
-| ORCAMENTO | id_orcamento, id_os (FK), data_orcamento, validade, valor_total, status |
-| ITEM_ORCAMENTO | id_item, id_orcamento (FK), id_servico (FK), id_peca (FK), quantidade, valor_unitario, valor_total |
-| SERVICO | id_servico, descricao, valor_padrao, tempo_padrao_horas, ativo |
-| PECA | id_peca, descricao, preco_unitario, estoque, ativo |
-| FORNECEDOR | id_fornecedor, nome, cnpj, endereco, telefone, email |
-| FORNECEDOR_PECA | id_fornecedor (PK, FK), id_peca (PK, FK), preco_compra, data_atualizacao |
-| PAGAMENTO | id_pagamento, id_orcamento (FK), data_pagamento, valor, forma_pagamento, status |
+Classificação: **identificador** (chave primária), **obrigatório**, **opcional**, **derivado** (calculado a partir de outros) e **chave estrangeira**. Todos os atributos são simples (não compostos) e monovalorados.
+
+| Entidade | Identificador | Obrigatórios | Opcionais | Derivados | Chave estrangeira |
+|---|---|---|---|---|---|
+| CLIENTE | id_cliente | nome, cpf_cnpj | telefone | — | — |
+| VEICULO | id_veiculo | placa, chassi, marca, modelo | cor, ano | — | id_cliente |
+| FUNCIONARIO | id_funcionario | nome, cpf, cargo, data_contratacao | telefone | — | — |
+| ORDEM_SERVICO | id_os | data_abertura, descricao_problema, status | previsao_entrega | — | id_veiculo, id_funcionario |
+| ORCAMENTO | id_orcamento | data_orcamento, validade, status | — | valor_total (soma dos itens) | id_os |
+| ITEM_ORCAMENTO | id_item | quantidade, valor_unitario | id_servico ou id_peca (um dos dois) | valor_total (quantidade × valor_unitario) | id_orcamento, id_servico, id_peca |
+| SERVICO | id_servico | descricao, valor_padrao, ativo | tempo_padrao_horas | — | — |
+| PECA | id_peca | descricao, preco_unitario, estoque, ativo | — | — | — |
+| FORNECEDOR | id_fornecedor | nome, cnpj | endereco, telefone, email | — | — |
+| FORNECEDOR_PECA | id_fornecedor + id_peca (composto) | preco_compra, data_atualizacao | — | — | id_fornecedor, id_peca |
+| PAGAMENTO | id_pagamento | data_pagamento, valor, forma_pagamento, status | — | — | id_orcamento |
 
 ---
 
 ## 13. Relacionamentos
 
-| Relacionamento | Entidades | Verbo (frase) |
+| Relacionamento | Entidades | Leitura |
 |---|---|---|
 | possui | CLIENTE — VEICULO | Um cliente possui veículos |
 | associado_a | VEICULO — ORDEM_SERVICO | Um veículo é associado a ordens de serviço |
@@ -304,23 +302,51 @@ flowchart TD
 | fornece | FORNECEDOR — FORNECEDOR_PECA | Um fornecedor fornece peças |
 | participa | PECA — FORNECEDOR_PECA | Uma peça participa de fornecimentos |
 
+### Atributos dos relacionamentos
+
+| Relacionamento | Possui atributo próprio? | Justificativa |
+|---|---|---|
+| FORNECEDOR — PECA (N:N) | **Sim:** preco_compra, data_atualizacao | O preço de compra não descreve só o fornecedor nem só a peça, e sim o fornecimento daquela peça por aquele fornecedor (RN18). Por isso o relacionamento vira a entidade associativa FORNECEDOR_PECA. |
+| Demais relacionamentos | Não | São 1:1 ou 1:N; qualquer informação descreve diretamente uma das entidades (por exemplo, quantidade e valor_unitario descrevem o item, não o vínculo orçamento–serviço). |
+
 ---
 
-## 14. Cardinalidades (método "vá e volte")
+## 14. Cardinalidades
 
-| Relacionamento | Ida | Volta | Tipo | Regra |
+Método **"vá e volte"**: cada relacionamento foi analisado nos dois sentidos. Notação: ENTIDADE (mín,máx) — relacionamento — ENTIDADE (mín,máx), em que a cardinalidade ao lado de cada entidade indica com quantas ocorrências da outra entidade ela se relaciona.
+
+| Relacionamento | Vá | Volta | Tipo | Regra |
 |---|---|---|---|---|
-| CLIENTE — VEICULO | Cliente tem quantos veículos? **(0,N)** | Veículo pertence a quantos clientes? **(1,1)** | 1:N | RN01, RN02 |
-| VEICULO — ORDEM_SERVICO | Veículo tem quantas OS? **(0,N)** | OS refere-se a quantos veículos? **(1,1)** | 1:N | RN03, RN04 |
-| FUNCIONARIO — ORDEM_SERVICO | Funcionário atende quantas OS? **(0,N)** | OS tem quantos responsáveis? **(1,1)** | 1:N | RN05, RN06 |
-| ORDEM_SERVICO — ORCAMENTO | OS gera quantos orçamentos? **(1,1)** | Orçamento pertence a quantas OS? **(1,1)** | 1:1 | RN07, RN08 |
-| ORCAMENTO — ITEM_ORCAMENTO | Orçamento tem quantos itens? **(0,N)** | Item pertence a quantos orçamentos? **(1,1)** | 1:N | RN09, RN10 |
-| SERVICO — ITEM_ORCAMENTO | Serviço está em quantos itens? **(0,N)** | Item tem quantos serviços? **(0,1)** | 1:N | RN11, RN13 |
-| PECA — ITEM_ORCAMENTO | Peça está em quantos itens? **(0,N)** | Item tem quantas peças? **(0,1)** | 1:N | RN12, RN13 |
-| ORCAMENTO — PAGAMENTO | Orçamento tem quantos pagamentos? **(1,1)** | Pagamento pertence a quantos orçamentos? **(1,1)** | 1:1 | RN14, RN15 |
-| FORNECEDOR — PECA | Fornecedor fornece quantas peças? **(0,N)** | Peça tem quantos fornecedores? **(0,N)** | N:N | RN16, RN17 |
-| FORNECEDOR — FORNECEDOR_PECA | **(1,1)** do lado fornecedor | **(0,N)** do lado associativa | 1:N | Resolução do N:N |
-| PECA — FORNECEDOR_PECA | **(1,1)** do lado peça | **(0,N)** do lado associativa | 1:N | Resolução do N:N |
+| CLIENTE (0,N) — possui — VEICULO (1,1) | Um cliente possui quantos veículos? **0,N** | Um veículo pertence a quantos clientes? **1,1** | 1:N | RN01, RN02 |
+| VEICULO (0,N) — associado_a — ORDEM_SERVICO (1,1) | Um veículo tem quantas ordens? **0,N** | Uma ordem refere-se a quantos veículos? **1,1** | 1:N | RN03, RN04 |
+| FUNCIONARIO (0,N) — atende — ORDEM_SERVICO (1,1) | Um funcionário atende quantas ordens? **0,N** | Uma ordem tem quantos responsáveis? **1,1** | 1:N | RN05, RN06 |
+| ORDEM_SERVICO (1,1) — gera — ORCAMENTO (1,1) | Uma ordem gera quantos orçamentos? **1,1** | Um orçamento pertence a quantas ordens? **1,1** | 1:1 | RN07, RN08 |
+| ORCAMENTO (0,N) — contem — ITEM_ORCAMENTO (1,1) | Um orçamento tem quantos itens? **0,N** | Um item pertence a quantos orçamentos? **1,1** | 1:N | RN09, RN10 |
+| SERVICO (0,N) — utilizado_em — ITEM_ORCAMENTO (0,1) | Um serviço está em quantos itens? **0,N** | Um item tem quantos serviços? **0,1** | 1:N | RN11, RN13 |
+| PECA (0,N) — compoe — ITEM_ORCAMENTO (0,1) | Uma peça está em quantos itens? **0,N** | Um item tem quantas peças? **0,1** | 1:N | RN12, RN13 |
+| ORCAMENTO (1,1) — gera_pagamento — PAGAMENTO (1,1) | Um orçamento tem quantos pagamentos? **1,1** | Um pagamento pertence a quantos orçamentos? **1,1** | 1:1 | RN14, RN15 |
+| FORNECEDOR (0,N) — fornece — PECA (0,N) | Um fornecedor fornece quantas peças? **0,N** | Uma peça tem quantos fornecedores? **0,N** | N:N | RN16, RN17 |
+
+### Verificação de relacionamentos N:N
+
+Só é N:N quando a resposta é "vários" nos **dois** sentidos.
+
+| Par | A → B vários? | B → A vários? | N:N? |
+|---|---|---|---|
+| Cliente — Veículo | Sim | Não | Não |
+| Veículo — Ordem de serviço | Sim | Não | Não |
+| Funcionário — Ordem de serviço | Sim | Não | Não |
+| Ordem de serviço — Orçamento | Não | Não | Não |
+| Orçamento — Item | Sim | Não | Não |
+| Serviço — Item | Sim | Não | Não |
+| Peça — Item | Sim | Não | Não |
+| Orçamento — Pagamento | Não | Não | Não |
+| **Fornecedor — Peça** | **Sim** | **Sim** | **Sim** |
+
+O único N:N é Fornecedor — Peça, resolvido por **FORNECEDOR_PECA**:
+
+- FORNECEDOR (0,N) — fornece — FORNECEDOR_PECA (1,1)
+- PECA (0,N) — participa — FORNECEDOR_PECA (1,1)
 
 ---
 
@@ -376,7 +402,7 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | id_os | int | Não | FK → ORDEM_SERVICO (único) | Uma OS gera um único orçamento (RN07) |
 | data_orcamento | datetime | Não | | Data de criação |
 | validade | date | Não | | Data limite de validade |
-| valor_total | decimal | Não | | Soma dos valores dos itens |
+| valor_total | decimal | Não | | Derivado: soma dos valores dos itens |
 | status | string | Não | | Situação (ex.: pendente, aprovado, expirado) |
 
 ### ITEM_ORCAMENTO
@@ -388,7 +414,7 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | id_peca | int | Sim | FK → PECA | Preenchido somente se o item for peça |
 | quantidade | int | Não | | Maior que zero |
 | valor_unitario | decimal | Não | | Preço no momento do orçamento (RN21) |
-| valor_total | decimal | Não | | quantidade × valor_unitario |
+| valor_total | decimal | Não | | Derivado: quantidade × valor_unitario |
 
 > Regra RN13: exatamente um entre `id_servico` e `id_peca` deve ser preenchido.
 
@@ -399,7 +425,7 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | descricao | string | Não | | Descrição do serviço |
 | valor_padrao | decimal | Não | | Valor de referência |
 | tempo_padrao_horas | decimal | Sim | | Tempo estimado de execução |
-| ativo | boolean | Não | | Serviço inativo não entra em novos orçamentos |
+| ativo | boolean | Não | | Serviço inativo não entra em novos orçamentos (RN20) |
 
 ### PECA
 | Atributo | Tipo | Nulo? | Chave | Descrição / regra |
@@ -407,8 +433,8 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | id_peca | int | Não | PK | Identificador da peça |
 | descricao | string | Não | | Descrição da peça |
 | preco_unitario | decimal | Não | | Preço de venda de referência |
-| estoque | int | Não | | Quantidade disponível; não negativa |
-| ativo | boolean | Não | | Peça inativa não entra em novos orçamentos |
+| estoque | int | Não | | Quantidade disponível; não negativa (RN19) |
+| ativo | boolean | Não | | Peça inativa não entra em novos orçamentos (RN20) |
 
 ### FORNECEDOR
 | Atributo | Tipo | Nulo? | Chave | Descrição / regra |
@@ -424,9 +450,9 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 | Atributo | Tipo | Nulo? | Chave | Descrição / regra |
 |---|---|---|---|---|
 | id_fornecedor | int | Não | PK, FK → FORNECEDOR | Parte da chave composta |
-| id_peca | int | Não | PK, FK → PECA | Parte da chave composta |
-| preco_compra | decimal | Não | | Preço pago ao fornecedor por esta peça |
-| data_atualizacao | date | Não | | Data da última atualização do preço |
+| id_peca | int | Não | PK, FK → PECA | Parte da chave composta; o par não pode se repetir |
+| preco_compra | decimal | Não | | Preço pago ao fornecedor por esta peça (RN18) |
+| data_atualizacao | date | Não | | Data da última atualização do preço (RN18) |
 
 ### PAGAMENTO
 | Atributo | Tipo | Nulo? | Chave | Descrição / regra |
@@ -440,110 +466,11 @@ Legenda: **PK** chave primária · **FK** chave estrangeira · **Nulo?** indica 
 
 ---
 
-## 16. Diagrama Entidade-Relacionamento (DER)
+## 16. DER
 
-O código-fonte está em [`diagramas/DER.mmd`](diagramas/DER.mmd). Exportar a imagem em PNG para `diagramas/DER.png` (por exemplo, em [mermaid.live](https://mermaid.live)).
+Em cada relacionamento, o texto traz a cardinalidade de cada lado, na mesma notação da seção 14.
 
-```mermaid
-erDiagram
-    CLIENTE ||--o{ VEICULO : possui
-    VEICULO ||--o{ ORDEM_SERVICO : "associado_a"
-    FUNCIONARIO ||--o{ ORDEM_SERVICO : atende
-    ORDEM_SERVICO ||--|| ORCAMENTO : gera
-    ORCAMENTO ||--|| PAGAMENTO : gera_pagamento
-    ORCAMENTO ||--o{ ITEM_ORCAMENTO : contem
-    SERVICO |o--o{ ITEM_ORCAMENTO : "utilizado_em"
-    PECA |o--o{ ITEM_ORCAMENTO : "compoe"
-    FORNECEDOR ||--o{ FORNECEDOR_PECA : fornece
-    PECA ||--o{ FORNECEDOR_PECA : participa
-
-    CLIENTE {
-        int id_cliente PK
-        string nome
-        string cpf_cnpj
-        string telefone
-    }
-    VEICULO {
-        int id_veiculo PK
-        string placa
-        string chassi
-        string cor
-        int ano
-        string marca
-        string modelo
-        int id_cliente FK
-    }
-    FUNCIONARIO {
-        int id_funcionario PK
-        string nome
-        string cpf
-        string cargo
-        string telefone
-        date data_contratacao
-    }
-    ORDEM_SERVICO {
-        int id_os PK
-        datetime data_abertura
-        string descricao_problema
-        datetime previsao_entrega
-        string status
-        int id_veiculo FK
-        int id_funcionario FK
-    }
-    ORCAMENTO {
-        int id_orcamento PK
-        int id_os FK
-        datetime data_orcamento
-        date validade
-        decimal valor_total
-        string status
-    }
-    PAGAMENTO {
-        int id_pagamento PK
-        int id_orcamento FK
-        datetime data_pagamento
-        decimal valor
-        string forma_pagamento
-        string status
-    }
-    SERVICO {
-        int id_servico PK
-        string descricao
-        decimal valor_padrao
-        decimal tempo_padrao_horas
-        boolean ativo
-    }
-    PECA {
-        int id_peca PK
-        string descricao
-        decimal preco_unitario
-        int estoque
-        boolean ativo
-    }
-    FORNECEDOR {
-        int id_fornecedor PK
-        string nome
-        string cnpj
-        string endereco
-        string telefone
-        string email
-    }
-    ITEM_ORCAMENTO {
-        int id_item PK
-        int id_orcamento FK
-        int id_servico FK "nulo - exclusivo com id_peca"
-        int id_peca FK "nulo - exclusivo com id_servico"
-        int quantidade
-        decimal valor_unitario
-        decimal valor_total
-    }
-    FORNECEDOR_PECA {
-        int id_fornecedor PK, FK
-        int id_peca PK, FK
-        decimal preco_compra
-        date data_atualizacao
-    }
-```
+![Diagrama Entidade-Relacionamento](diagramas/DER.png)
 
 **Chaves primárias e estrangeiras**
 
@@ -565,42 +492,52 @@ erDiagram
 
 ## 17. Justificativas técnicas
 
-**17.1 Chaves primárias e estrangeiras.** Cada entidade tem identificador próprio para ser identificada de forma única. As chaves estrangeiras materializam os relacionamentos e garantem a integridade referencial (RNF04).
+Cada decisão responde: **o que decidimos, por que, e qual regra ou necessidade a sustenta.**
 
-**17.2 FORNECEDOR_PECA como entidade associativa (N:N).** Decidimos criar essa entidade porque, pelas regras RN16 e RN17, um fornecedor pode fornecer várias peças e uma peça pode ter vários fornecedores. Além disso, o preço de compra e a data de atualização não pertencem nem só ao fornecedor nem só à peça: descrevem o fornecimento daquela peça por aquele fornecedor (RN18). A chave primária é composta (id_fornecedor + id_peca) porque a combinação dos dois identifica de forma única cada relação de fornecimento, e impede registrar o mesmo par duas vezes.
+| O que decidimos | Por que | Regra / necessidade |
+|---|---|---|
+| Cliente (0,N) e veículo (1,1) em CLIENTE—VEICULO | Um cliente pode estar cadastrado sem veículo e ter vários; um veículo nunca existe sem proprietário. | RN01, RN02 |
+| Veículo (0,N) e ordem (1,1) em VEICULO—ORDEM_SERVICO | Um veículo novo ainda não tem ordens e pode ter várias ao longo do tempo; cada ordem trata de um único veículo. | RN03, RN04 |
+| Funcionário (0,N) e ordem (1,1) em FUNCIONARIO—ORDEM_SERVICO | Um funcionário pode ainda não ter atendimentos; cada ordem tem exatamente um responsável. | RN05, RN06 |
+| **Remover `id_cliente` de ORDEM_SERVICO** | O veículo já pertence a um único cliente; guardar o cliente também na ordem permitiria uma ordem de um cliente com veículo de outro. O cliente continua acessível pelo caminho ORDEM → VEÍCULO → CLIENTE. | RN02, RN04 |
+| ORDEM_SERVICO—ORCAMENTO como 1:1, em entidades separadas | A regra define um orçamento por ordem. A ordem registra o atendimento (problema, prazo, responsável); o orçamento registra valores, itens e validade, com status próprio. | RN07, RN08 |
+| ORCAMENTO—ITEM_ORCAMENTO como 1:N | Um orçamento é composto por vários itens e cada item pertence a um só orçamento. | RN09, RN10 |
+| ITEM_ORCAMENTO com `id_servico` e `id_peca` anuláveis e exclusivos | Uma única entidade permite compor o orçamento com serviços e peças. Exatamente um dos dois deve ser preenchido, o que explica a cardinalidade (0,1) do lado do item. Na implementação física, deve ser garantido por restrição (CHECK). | RN11, RN12, RN13 |
+| Valor total do item e do orçamento mantidos como atributos derivados | Facilitam consultas e preservam o valor emitido ao cliente. | RF14 |
+| `valor_unitario` copiado para o item | Congela o preço do momento do orçamento; reajustes futuros não alteram orçamentos antigos. | RN21 |
+| ORCAMENTO—PAGAMENTO como 1:1 | Segue a regra levantada: cada orçamento tem um pagamento. | RN14, RN15 |
+| Fornecedor—Peça considerado N:N | Um fornecedor fornece várias peças e uma peça pode ter vários fornecedores. | RN16, RN17 |
+| Criar a entidade associativa FORNECEDOR_PECA | O N:N precisa ser decomposto em duas relações 1:N e há informação própria do fornecimento. | RN18 |
+| `preco_compra` e `data_atualizacao` pertencem ao relacionamento, não a PECA nem a FORNECEDOR | O preço varia conforme o par fornecedor/peça: a mesma peça tem preços diferentes em fornecedores diferentes. | RN18, RF17 |
+| Chave primária composta (id_fornecedor + id_peca) em FORNECEDOR_PECA | A combinação dos dois identifica de forma única cada fornecimento e impede registrar o mesmo par duas vezes. Além disso, cada atributo da chave é também chave estrangeira. | Diário de bordo (aula de 15/09), RN16, RN17 |
+| Atributo `ativo` em SERVICO e PECA em vez de exclusão | Preserva o histórico de orçamentos antigos que usaram o cadastro. | RN20 |
+| Atributo `estoque` em PECA | Cada peça precisa de quantidade controlada. | RN19, RF15 |
+| Chaves primárias próprias (id_*) em todas as entidades | Identificação única e relacionamentos por chaves estrangeiras, preservando a integridade. | RNF04 |
 
-**17.3 Cardinalidades mínimas 0.** Cliente (0,N) em veículos, veículo (0,N) em ordens e funcionário (0,N) em ordens, pois um cadastro pode existir antes de ter movimentação. Em contrapartida, o lado "filho" é (1,1): veículo sem cliente, OS sem veículo ou sem funcionário não podem existir (RN02, RN04, RN06).
+### Escalabilidade e integração
 
-**17.4 Remoção de `id_cliente` da ORDEM_SERVICO.** Como todo veículo pertence a um único cliente (RN02) e toda OS refere-se a um único veículo (RN04), o cliente da OS é obtido pelo veículo. Manter `id_cliente` também na OS permitiria registrar uma OS de um cliente com veículo de outro, gerando inconsistência e exigindo uma regra extra de verificação. A consulta de ordens por cliente continua possível pela junção OS → VEÍCULO → CLIENTE.
+**Integração.** As entidades formam uma cadeia ligada por chaves estrangeiras: CLIENTE → VEICULO → ORDEM_SERVICO → ORCAMENTO → ITEM_ORCAMENTO → SERVICO/PECA → FORNECEDOR_PECA → FORNECEDOR, e ORCAMENTO → PAGAMENTO. Um dado cadastrado em um processo é reaproveitado nos seguintes, sem redigitação.
 
-**17.5 ITEM_ORCAMENTO com serviço ou peça.** Uma única entidade de item permite compor o orçamento com os dois tipos. Para evitar ambiguidade (RN13), `id_servico` e `id_peca` são anuláveis e exatamente um deve ser preenchido. Isso explica as cardinalidades (0,1) do lado do item em SERVICO e PECA. Na implementação física, essa regra deve ser garantida por restrição (CHECK).
+**Preparação para evolução.** O modelo permite, nas próximas etapas, sem refazer a base:
 
-**17.6 Atributos derivados mantidos.** `valor_total` do item (quantidade × valor unitário) e `valor_total` do orçamento (soma dos itens) são derivados. Foram mantidos por desempenho de consulta e para preservar o valor emitido ao cliente. O `valor_unitario` do item é copiado do preço padrão no momento do orçamento (RN21) para que reajustes futuros não alterem orçamentos antigos.
-
-**17.7 Orçamento–Pagamento 1:1.** Seguimos a regra do negócio levantada (RN14 e RN15): cada orçamento tem um pagamento. Reconhecemos que, na prática, a funilaria pode receber sinal e parcelas; nesse caso o relacionamento evoluiria para 1:N (um orçamento com vários pagamentos), o que é uma mudança simples nas próximas etapas.
-
-**17.8 Ordem de serviço–Orçamento 1:1.** Cada ordem gera exatamente um orçamento (RN07, RN08). Mantemos como entidades separadas porque a OS registra o atendimento (problema, prazo, responsável), enquanto o orçamento registra valores, itens e validade, que têm ciclos de vida e status próprios.
-
-**17.9 Ativo/inativo em serviços e peças.** Em vez de excluir cadastros, usamos o atributo `ativo`, preservando o histórico de orçamentos antigos que os utilizaram (RN20).
+- transformar ORCAMENTO—PAGAMENTO em 1:N, caso a empresa passe a receber sinal e parcelas;
+- criar tabelas de domínio para status e forma de pagamento;
+- decompor `endereco` de FORNECEDOR (e de CLIENTE, se necessário) em atributos separados;
+- registrar movimentações de estoque e o histórico de preços de compra.
 
 ---
 
-## 18. Estrutura do repositório
+## 18. Conclusão
+
+A modelagem organiza os principais dados e processos da Prime Funilaria, de clientes e veículos até o pagamento, passando por ordens de serviço, orçamentos, serviços, peças e fornecedores. O DER foi construído a partir dos processos, requisitos e regras de negócio levantados, e cada entidade, atributo, relacionamento e cardinalidade tem justificativa ligada a uma regra. O modelo serve de base para as próximas etapas: modelo lógico, normalização, modelo físico e banco de dados.
+
+---
+
+### Anexo — Estrutura do repositório
 
 ```text
 projeto-funilaria/
 ├── README.md
-├── diagramas/
-│   ├── DER.mmd
-│   └── DER.png
-└── documentos/
-    └── diario_de_bordo/   (digitalizações, opcional)
+└── diagramas/
+    └── DER.png
 ```
-
-Os fluxogramas e o DER estão no próprio README em Mermaid (renderizados pelo GitHub).
-
----
-
-## 19. Conclusão
-
-A modelagem organiza os principais dados e processos da Prime Funilaria, de clientes e veículos até o pagamento, passando por ordens de serviço, orçamentos, serviços, peças e fornecedores. O DER foi construído a partir dos processos, requisitos e regras de negócio levantados, e cada cardinalidade e entidade tem justificativa. O modelo serve de base para as próximas etapas: modelo lógico, normalização e modelo físico.
