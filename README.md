@@ -20,7 +20,7 @@ Projeto Integrador de Modelagem de Dados: do problema real ao Modelo Conceitual 
 | Davi Melo Salgueiro Leonardi | 48129470 |
 | Ruan Sousa Silva | 47347805 |
 | Vinicius de Oliveira | 47710608 |
-| Leonardo | não informado |
+| Leonardo Augusto | 47733497 |
 | Leonardo (segundo integrante) | não informado |
 
 ---
