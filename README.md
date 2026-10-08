@@ -68,7 +68,7 @@ A funilaria foi escolhida porque reúne, em um único negócio pequeno, processo
 Para a modelagem de dados, o negócio permite aplicar:
 
 - relacionamentos **1:N** (cliente–veículo, orçamento–itens);
-- relacionamento **1:1** (ordem de serviço–orçamento);
+- relacionamento **1:1** (ordem de serviço–orçamento e orçamento–pagamento);
 - relacionamento **N:N com atributos próprios** (fornecedor–peça, com preço de compra e data de atualização), resolvido por entidade associativa e chave composta;
 - uma regra de **exclusividade** (item de orçamento é serviço ou peça);
 - controle de **estoque** (com baixa na aprovação do orçamento e entrada no recebimento de peças) e de situação ativa/inativa de cadastros.
@@ -145,7 +145,7 @@ Para a modelagem de dados, o negócio permite aplicar:
 - **RNF02 — Controle de acesso:** o sistema deverá controlar as operações permitidas conforme o perfil do usuário (atendimento, estoque e financeiro), de acordo com as políticas da seção 9.
 - **RNF03 — Rastreabilidade:** o sistema deverá manter registro das operações realizadas pelos usuários.
 - **RNF04 — Integridade:** o sistema deverá preservar a integridade dos relacionamentos entre os dados.
-- **RNF05 — Confiabilidade:** o sistema deverá manter os dados consistentes, evitando duplicidade de CPF/CNPJ, placa e chassi (RN29).
+- **RNF05 — Confiabilidade:** o sistema deverá manter os dados consistentes, evitando duplicidade dos identificadores únicos definidos na RN29 (CPF/CNPJ do cliente, placa e chassi do veículo, CPF do funcionário e CNPJ do fornecedor).
 - **RNF06 — Usabilidade:** o sistema deverá apresentar as informações de forma clara para usuários sem formação técnica.
 - **RNF07 — Desempenho:** o sistema deverá apresentar as consultas em tempo adequado para uso operacional.
 - **RNF08 — Disponibilidade:** o sistema deverá estar disponível durante o horário de funcionamento da empresa.
